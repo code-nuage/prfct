@@ -18,9 +18,6 @@ function Button:new()
         r = .5, g = .5, b = .5, a = 1
     }
 
-    instance.x, instance.y = 0, 0
-    instance.w, instance.h = 200, 30
-
     return instance
 end
 
@@ -47,10 +44,6 @@ end
 --[[
     SETTERS
 ]]
-function Button:set_dimensions(w, h)
-    self.w, self.h = w, h
-    return self
-end
 
 function Button:set_text(text)
     self.text = text
@@ -75,10 +68,6 @@ end
 --[[
     GETTERS
 ]]
-function Button:get_dimensions()
-    return self.w, self.h
-end
-
 function Button:get_text()
     return self.text
 end

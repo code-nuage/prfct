@@ -15,20 +15,12 @@ function Text:new()
         r = 1, g = 1, b = 1, a = 1
     }
 
-    instance.x, instance.y = 0, 0
-    instance.w, instance.h = instance.font:getWidth(instance.text), instance.font:getHeight(instance.text)
-
     return instance
 end
 
 --[[
     SETTERS
 ]]
-function Text:set_dimensions(w, h)
-    self.w, self.h = w, h
-    return self
-end
-
 function Text:set_text(text)
     self.text = text
     self:set_dimensions(self:get_font():getWidth(text), self:get_font():getHeight(text)) -- Set dimensions of the item again
@@ -49,9 +41,6 @@ end
 --[[
     GETTERS
 ]]
-function Text:get_dimensions()
-    return self.w, self.h
-end
 
 function Text:get_text()
     return self.text
