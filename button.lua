@@ -1,5 +1,15 @@
 local unpack = table.unpack or unpack
 
+local function rounded_rectangle(x, y, w, h, radius)
+    love.graphics.rectangle("fill", x, y + radius, w, h - (radius * 2))
+    love.graphics.rectangle("fill", x + radius, y, w - (radius * 2), h)
+
+    love.graphics.circle("fill", x + radius, y + radius, radius)
+    love.graphics.circle("fill", x + radius, y + h - radius, radius)
+    love.graphics.circle("fill", x + w - radius, y + radius, radius)
+    love.graphics.circle("fill", x + w - radius, y + h - radius, radius)
+end
+
 --[[
     CONSTRUCTOR
 ]]
@@ -17,6 +27,7 @@ function Button:new()
     instance.background_color = {
         r = .5, g = .5, b = .5, a = 1
     }
+    instance.border_radius = 0
 
     return instance
 end
@@ -65,6 +76,11 @@ function Button:set_background_color(r, g, b, a)
     return self
 end
 
+function Button:set_border_radius(radius)
+    self.border_radius = radius
+    return self
+end
+
 --[[
     GETTERS
 ]]
@@ -92,7 +108,7 @@ function Button:draw()
     local r, g, b, a = love.graphics.getColor()
 
     love.graphics.setColor(self.background_color.r, self.background_color.g, self.background_color.b, self.background_color.a)
-    love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
+    rounded_rectangle(self.x, self.y, self.w, self.h, self.border_radius)
 
     love.graphics.setColor(self.text_color.r, self.text_color.g, self.text_color.b, self.text_color.a)
     love.graphics.setFont(self:get_font())

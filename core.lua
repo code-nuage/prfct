@@ -1,8 +1,9 @@
 local core = {}
 
 local base  = (...):gsub("%.[^%.]+$", "")
-local button = require(base .. ".button")
-local text = require(base .. ".text")
+local Area = require(base .. ".area")
+local Button = require(base .. ".button")
+local Text = require(base .. ".text")
 
 local function multiple_inheritance(...)
     local args = {...}
@@ -51,7 +52,7 @@ function core.new_view(x, y, w, h)
     instance.px, instance.py = x, y
     instance.margin = 10
     instance.w, instance.h = w, h
-    
+
     instance.items = {}
 
     return instance
@@ -78,12 +79,15 @@ end
 function core.new_item(type)
     local instance
 
-    if type == "text" then
-        instance = setmetatable(text:new(), multiple_inheritance(Item, text))
+    if type == "area" then
+        instance = setmetatable(Area:new(), multiple_inheritance(Item, Area))
+        instance:set_dimensions(100, 100)
+    elseif type == "text" then
+        instance = setmetatable(Text:new(), multiple_inheritance(Item, Text))
         instance:set_dimensions(instance.font:getWidth(instance.text), instance.font:getHeight(instance.text))
     elseif type == "button" then
-        instance = setmetatable(button:new(), multiple_inheritance(Item, button))
-        instance:set_dimensions(200, 30)
+        instance = setmetatable(Button:new(), multiple_inheritance(Item, Button))
+        instance:set_dimensions(160, 30)
     else
         error(type .. " is not a type in prfct.")
     end
