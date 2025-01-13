@@ -1,47 +1,39 @@
-local unpack = table.unpack or unpack
+Text = {}
 
 --[[
     CONSTRUCTOR
 ]]
-local Text = {}
-Text.__index = Text
+function Text:init_heritage()
+    self:set_color(1, 1, 1, 1)
+    self:set_text("Some text...")
+    self:set_font(love.graphics.getFont())
 
-function Text:new()
-    local instance = setmetatable({}, Text)
-
-    instance.text = "Text"
-    instance.font = love.graphics.getFont()
-    instance.color = {
-        r = 1, g = 1, b = 1, a = 1
-    }
-
-    return instance
+    return self
 end
 
 --[[
-    SETTERS
+    PUBLIC SETTERS
 ]]
-function Text:set_text(text)
-    self.text = text
-    self:set_dimensions(self:get_font():getWidth(text), self:get_font():getHeight(text)) -- Set dimensions of the item again
-    return self
-end
-
-function Text:set_font(font)
-    self.font = font
-    self:set_dimensions(font:getWidth(self:get_text()), font:getHeight(self:get_text())) -- Set dimensions of the item again
-    return self
-end
-
 function Text:set_color(r, g, b, a)
     self.color = {r = r, g = g, b = b, a = a or 1}
     return self
 end
 
---[[
-    GETTERS
-]]
+function Text:set_text(text)
+    assert(type(text) == "string", "Text must be a string.")
+    self.text = text
+    self:set_dimensions(love.graphics.getFont():getWidth(text), love.graphics.getFont():getHeight(text))
+    return self
+end
 
+function Text:set_font(font)
+    self.font = font
+    return self
+end
+
+--[[
+    PUBLIC GETTERS
+]]
 function Text:get_text()
     return self.text
 end
@@ -51,24 +43,24 @@ function Text:get_font()
 end
 
 function Text:get_color()
-    local r, g, b, a = self.color.r, self.color.g, self.color.b, self.color.a
-    return {r, g, b, a}
+    return self.color.r, self.color.g, self.color.b, self.color.a
 end
 
 --[[
-    DRAW
+    LOVE DRAWING METHOD
 ]]
-function Text:draw()
+function Text:draw_heritage()
+    local x, y = self:get_position()
     local font = love.graphics.getFont()
-    local r, g, b, a = love.graphics.getColor()
 
+    local pr, pg, pb, pa = love.graphics.getColor()
+    love.graphics.setColor(self:get_color())
     love.graphics.setFont(self:get_font())
-    love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
 
-    love.graphics.print(self.text, self.x, self.y)
+    love.graphics.print(self.text, x, y)
 
+    love.graphics.setColor(pr, pg, pb, pa)
     love.graphics.setFont(font)
-    love.graphics.setColor(r, g, b, a)
 end
 
 return Text

@@ -1,96 +1,115 @@
-unpack = table.unpack or unpack
-
 Area = {}
 Area.__index = Area
+Area.align_modes = { -- DEFINES HOW THE CHILDREN ITEMS INTERACT WITH OTHERS CHILDREN
+    "start",
+    "center",
+    "end"
+}
+Area.justify_modes = { -- DEFINES HOW THE CHILDREN ITEMS INTERACT WITH EACH OTHERS
+    "start", -- Everything is anchored to the start of the Area
+    "center", -- Everything is anchored to the center of the Area
+    "end", -- Everything is anchored to the end of the Area
+    "space-between", -- The space between each children is equal
+    "space-around" -- The space around each children is equal
+}
+Area.direction_modes = {
+    "horizontal",
+    "vertical"
+}
 
+--[[
+    PRIVATE FUNCTIONS
+]]
+local function draw_rounded_rectangle(x, y, w, h, radius)
+    radius = math.min(radius, w / 2, h / 2)
+
+    love.graphics.rectangle("fill", x + radius, y, w - 2 * radius, h)
+    love.graphics.rectangle("fill", x, y + radius, w, h - 2 * radius)
+
+    love.graphics.arc("fill", x + radius, y + radius, radius, math.rad(180), math.rad(270))
+    love.graphics.arc("fill", x + w - radius, y + radius, radius, math.rad(270), math.rad(360))
+    love.graphics.arc("fill", x + w - radius, y + h - radius, radius, math.rad(0), math.rad(90))
+    love.graphics.arc("fill", x + radius, y + h - radius, radius, math.rad(90), math.rad(180))
+end
+
+
+--[[
+    CONSTRUCTOR
+]]
 function Area:new()
     local instance = setmetatable({}, Area)
 
-    instance:set_mode("normal")
-    instance:set_align("start")
-    instance:set_direction("horizontal")
+    self.px, self.py = 0, 0
+    instance:set_position(0, 0)
+    instance:set_dimensions(100, 100)
+    instance:set_background_color(0, 0, 0, 0)
+    instance:set_radius(5)
+
     instance.items = {}
 
     return instance
 end
 
 --[[
-    SETTERS
+    PUBLIC SETTERS
 ]]
-function Area:add_item(item)
-    table.insert(self.items, item)
-    if self:get_mode() == "normal" then
-        item:set_position(self.x, self.y + self.items[#self.items].h or self.y)
-    elseif self:get_mode() == "space-between" then
-        self:update_items()
-    end
+function Area:set_position(x, y)
+    assert(type(x) == "number" and type(y) == "number", "Position must be numbers.")
+    self.x, self.y = x, y
     return self
 end
 
-function Area:update_items()
-    local available_length = self.w
-    local item_count = #self.items
-
-    if item_count < 2 then
-        -- Si 0 ou 1 item, aucun espacement nécessaire
-        for _, item in ipairs(self.items) do
-            item:set_position(self.x, self.y)
-        end
-        return
-    end
-
-    -- Calculer la largeur totale occupée par les objets
-    for _, item in ipairs(self.items) do
-        available_length = available_length - item.w
-    end
-
-    -- Calculer l'espace entre les objets
-    local gap = available_length / (item_count - 1)
-
-    -- Positionner les objets
-    local current_x = self.x
-    for i, item in ipairs(self.items) do
-        item:set_position(current_x, self.y) -- Positionner l'élément
-        current_x = current_x + item.w + gap -- Avancer à la position suivante
-    end
-end
-
-function Area:set_mode(mode)
-    if mode == "normal" or mode == "space-between" or mode == "space-around" then
-        self.mode = mode
-    else
-        error(mode .. " mode is not an area mode in prfct.")
-    end
+function Area:set_dimensions(w, h)
+    assert(type(w) == "number" and type(h) == "number", "Dimensions must be numbers.")
+    self.w, self.h = w, h
     return self
 end
 
-function Area:set_align(align)
-    if align == "start" or align == "center" or align == "end" then
-        self.align = align
-    else
-        error(align .. " align is not an area align in prfct.")
-    end
+function Area:set_background_color(r, g, b, a)
+    self.background_color = {r = r, g = g, b = b, a = a or 1}
     return self
 end
 
-function Area:set_direction(direction)
-    if direction == "normal" or "space-between" or "space-around" then
-        self.mode = direction
-    else
-        error(direction .. " is not an area direction in prfct.")
-    end
+function Area:set_radius(radius)
+    self.radius = radius
     return self
 end
 
 --[[
-    GETTERS
+    PUBLIC GETTERS
 ]]
-function Area:get_mode()
-    return self.mode
+function Area:get_position()
+    return self.x, self.y
 end
 
+function Area:get_dimensions()
+    return self.w, self.h
+end
+
+function Area:get_background_color()
+    return self.background_color.r, self.background_color.g, self.background_color.b, self.background_color.a
+end
+
+function Area:get_radius()
+    return self.radius
+end
+
+--[[
+    LOVE DRAWING METHOD
+]]
 function Area:draw()
-    love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
+    local x, y = self:get_position()
+    local w, h = self:get_dimensions()
+    local radius = self:get_radius()
+
+    local pr, pg, pb, pa = love.graphics.getColor()
+    love.graphics.setColor(self:get_background_color())
+
+    draw_rounded_rectangle(x, y, w, h, radius)
+
+    love.graphics.setColor(pr, pg, pb, pa)
+
+    if self.draw_heritage then self:draw_heritage() end
 
     for _, item in ipairs(self.items) do
         item:draw()
