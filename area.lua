@@ -1,21 +1,5 @@
 Area = {}
 Area.__index = Area
-Area.align_modes = { -- DEFINES HOW THE CHILDREN ITEMS INTERACT WITH OTHERS CHILDREN
-    "start",
-    "center",
-    "end"
-}
-Area.justify_modes = { -- DEFINES HOW THE CHILDREN ITEMS INTERACT WITH EACH OTHERS
-    "start", -- Everything is anchored to the start of the Area
-    "center", -- Everything is anchored to the center of the Area
-    "end", -- Everything is anchored to the end of the Area
-    "space-between", -- The space between each children is equal
-    "space-around" -- The space around each children is equal
-}
-Area.direction_modes = {
-    "horizontal",
-    "vertical"
-}
 
 --[[
     PRIVATE FUNCTIONS
@@ -43,9 +27,7 @@ function Area:new()
     instance:set_position(0, 0)
     instance:set_dimensions(100, 100)
     instance:set_background_color(0, 0, 0, 0)
-    instance:set_radius(5)
-
-    instance.items = {}
+    instance:set_radius(0)
 
     return instance
 end
@@ -110,10 +92,7 @@ function Area:draw()
     love.graphics.setColor(pr, pg, pb, pa)
 
     if self.draw_heritage then self:draw_heritage() end
-
-    for _, item in ipairs(self.items) do
-        item:draw()
-    end
+    if self.draw_container then self:draw_container() end
 end
 
 return Area
