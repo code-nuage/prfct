@@ -90,9 +90,9 @@ function Container:update_items()
     local start_x, start_y = self:get_position()
 	if self.justify == "center" then
 		if self.direction == "horizontal" then
-			start_x = (container_width / 2) - (total_width / 2)
+			start_x = start_x + (container_width / 2) - (total_width / 2)
 		elseif self.direction == "vertical" then
-			start_y = (container_height / 2) - (total_height / 2)
+			start_y = start_x + (container_height / 2) - (total_height / 2)
 		end
 	elseif self.justify == "space-between" then
         if self.direction == "horizontal" then
