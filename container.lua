@@ -1,4 +1,4 @@
-Container = {}
+local Container = {}
 Container.align_modes = { -- DEFINES HOW THE CHILDREN ITEMS INTERACT WITH OTHERS CHILDREN
     "start",
     "center",
@@ -139,6 +139,10 @@ end
 --[[
     PUBLIC GETTERS
 ]]
+function Container:get_items()
+    return self.items
+end
+
 function Container:get_align()
     return self.align
 end

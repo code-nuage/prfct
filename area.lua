@@ -1,4 +1,4 @@
-Area = {}
+local Area = {}
 Area.__index = Area
 
 --[[
@@ -57,6 +57,11 @@ function Area:set_radius(radius)
     return self
 end
 
+function Area:set_type(type)
+    self.type = type
+    return self
+end
+
 --[[
     PUBLIC GETTERS
 ]]
@@ -74,6 +79,10 @@ end
 
 function Area:get_radius()
     return self.radius
+end
+
+function Area:get_type()
+    return self.type
 end
 
 --[[

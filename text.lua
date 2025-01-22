@@ -1,4 +1,4 @@
-Text = {}
+local Text = {}
 
 --[[
     CONSTRUCTOR

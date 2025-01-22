@@ -1,4 +1,4 @@
-Button = {}
+local Button = {}
 
 --[[
     PUBLIC METHODS

@@ -43,6 +43,8 @@ function core.new_item(item_type)
         error(item_type .. "is not an item type in prfct.")
     end
 
+    instance:set_type(item_type)
+
     return instance
 end
 

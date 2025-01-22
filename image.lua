@@ -1,4 +1,4 @@
-Image = {}
+local Image = {}
 
 function Image:set_image(image)
     self.image = image
